@@ -1,0 +1,182 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Lujien × Omar | Love Test</title>
+<style>
+@import url('https://fonts.googleapis.com/css2?family=Cairo:wght@400;600;700;800&family=Pacifico&display=swap');
+*{box-sizing:border-box}
+body{margin:0;min-height:100vh;font-family:Cairo,sans-serif;background:linear-gradient(135deg,#fff0f6,#f8edff,#fff);color:#542044;overflow-x:hidden}
+body:before,body:after{content:"♡";position:fixed;font-size:120px;color:#ffb6d5;opacity:.22;z-index:-1}
+body:before{top:4%;left:4%;transform:rotate(-20deg)}
+body:after{bottom:2%;right:3%;transform:rotate(18deg)}
+.container{width:min(92%,560px);margin:auto;padding:28px 0 45px}
+.card{background:rgba(255,255,255,.88);backdrop-filter:blur(12px);border:2px solid #ffd4e6;border-radius:30px;padding:28px;box-shadow:0 18px 50px rgba(165,72,119,.15)}
+.screen{text-align:center}
+.hidden{display:none!important}
+.logo{font-family:Pacifico,cursive;color:#e85b98;font-size:34px;direction:ltr}
+h1{font-size:28px;margin:12px 0 6px}
+h2{font-size:21px}
+.subtitle{color:#8d6680;line-height:1.8}
+.heart{font-size:65px;animation:pulse 1.5s infinite}
+@keyframes pulse{50%{transform:scale(1.12)}}
+button{border:0;border-radius:18px;padding:14px 22px;font-family:inherit;font-weight:800;font-size:16px;cursor:pointer;background:#ec6ba5;color:#fff;box-shadow:0 8px 20px rgba(236,107,165,.25);transition:.2s}
+button:hover{transform:translateY(-2px)}
+.secondary{background:#fff;color:#d74f8e;border:2px solid #ffd0e2;box-shadow:none}
+.progress{height:10px;background:#ffe1ed;border-radius:20px;overflow:hidden;margin:18px 0 25px}
+.progress span{display:block;height:100%;background:linear-gradient(90deg,#ed73a9,#a976e8);width:0;transition:.35s}
+.qnum{color:#d45b91;font-weight:800;font-size:14px}
+.question{font-size:22px;font-weight:800;line-height:1.55;margin:10px 0 20px}
+.options{display:grid;gap:12px}
+.option{width:100%;background:#fff6fa;color:#65304e;border:2px solid #ffd8e7;box-shadow:none;text-align:right}
+.option.selected{background:#ffe1ee;border-color:#e85b98;color:#a72e68}
+.nav{display:flex;gap:10px;margin-top:20px}
+.nav button{flex:1}
+.openq{text-align:right;margin:22px 0}
+.openq label{display:block;font-weight:800;margin-bottom:8px}
+textarea{width:100%;min-height:90px;border:2px solid #ffd3e4;border-radius:18px;padding:12px;font-family:inherit;font-size:15px;resize:vertical;outline:none}
+textarea:focus{border-color:#e85b98}
+.score{font-size:56px;font-weight:800;color:#e85b98;line-height:1}
+.message{margin:20px 0;padding:20px;border-radius:22px;background:#fff1f7;border:2px dashed #f4a5c5;font-weight:700;line-height:2}
+.answers{margin-top:20px;text-align:right}
+.answerbox{background:#fff8fb;border:1px solid #ffdbe8;border-radius:17px;padding:13px;margin:10px 0}
+.label{font-size:13px;color:#b36b8d;font-weight:800}
+.float{position:fixed;animation:float 7s linear infinite;opacity:.5;pointer-events:none}
+@keyframes float{from{transform:translateY(110vh) rotate(0);opacity:0}20%{opacity:.55}to{transform:translateY(-15vh) rotate(360deg);opacity:0}}
+.small{font-size:13px;color:#987286}
+</style>
+</head>
+<body>
+<div id="floats"></div>
+<div class="container">
+  <div class="card">
+
+    <section id="start" class="screen">
+      <div class="heart">💗</div>
+      <div class="logo">Lujien × Omar</div>
+      <h1>Love Test 🎀</h1>
+      <p class="subtitle">قد إيه Omar يعرف Lujien بجد؟<br>15 سؤال... وهنشوف النتيجة 👀</p>
+      <button onclick="startTest()">ابدأ الاختبار 💌</button>
+      <p class="small">وبعد الـ15 سؤال فيه 3 أسئلة خاصة مش بيتحسبوا في النتيجة 👀</p>
+    </section>
+
+    <section id="quiz" class="hidden">
+      <div class="qnum" id="qnum"></div>
+      <div class="progress"><span id="bar"></span></div>
+      <div class="question" id="question"></div>
+      <div class="options" id="options"></div>
+      <div class="nav">
+        <button class="secondary" id="backBtn" onclick="backQuestion()">السابق</button>
+        <button id="nextBtn" onclick="nextQuestion()">التالي 💗</button>
+      </div>
+    </section>
+
+    <section id="open" class="hidden">
+      <div class="heart">💌</div>
+      <h2>خلصنا الاختبار الأساسي!</h2>
+      <p class="subtitle">دلوقتي 3 أسئلة من القلب... اكتب إجابتك براحتك، دول مش بيتحسبوا ❤️</p>
+
+      <div class="openq">
+        <label>💭 إيه أكتر حاجة نفسك تعملها مع Lujien؟</label>
+        <textarea id="a1" placeholder="اكتب إجابتك هنا..."></textarea>
+      </div>
+      <div class="openq">
+        <label>🫶 إيه أكتر حاجة بتحبها فيها؟</label>
+        <textarea id="a2" placeholder="اكتب إجابتك هنا..."></textarea>
+      </div>
+      <div class="openq">
+        <label>💌 لو هتقولها حاجة واحدة دلوقتي، هتقولها إيه؟</label>
+        <textarea id="a3" placeholder="اكتب إجابتك هنا..."></textarea>
+      </div>
+      <button onclick="showResult()">شوف النتيجة 💗</button>
+    </section>
+
+    <section id="result" class="hidden screen">
+      <div class="heart">💞</div>
+      <div class="logo">Result</div>
+      <p>Omar يعرف Lujien بنسبة</p>
+      <div class="score" id="score"></div>
+      <p id="fraction"></p>
+      <div class="message" id="message"></div>
+
+      <div class="answers">
+        <h3>💌 إجابات Omar الخاصة</h3>
+        <div class="answerbox"><div class="label">إيه أكتر حاجة نفسك تعملها مع Lujien؟</div><div id="r1"></div></div>
+        <div class="answerbox"><div class="label">إيه أكتر حاجة بتحبها فيها؟</div><div id="r2"></div></div>
+        <div class="answerbox"><div class="label">لو هتقولها حاجة واحدة دلوقتي؟</div><div id="r3"></div></div>
+      </div>
+      <br>
+      <button class="secondary" onclick="location.reload()">اعمل الاختبار تاني 🔄</button>
+    </section>
+
+  </div>
+</div>
+
+<script>
+const questions = [
+ {q:"إيه أكتر حاجة Lujien بتحبها من الشخص اللي معاها؟",o:["الهدايا الغالية","إنه يهتم بيها","إنه يخرجها كل يوم","إنه يسيبها براحتها"],c:1},
+ {q:"إيه أكتر حاجة بتضايق Lujien؟",o:["حد يتجاهلها","حد يضحك معاها","الخروج","الأفلام"],c:0},
+ {q:"إيه لون Lujien المفضل؟",o:["أسود","بينك","أزرق","أخضر"],c:1},
+ {q:"إيه الأكلة اللي Lujien بتحبها؟",o:["بيتزا","برجر","شاورما","مكرونة"],c:2},
+ {q:"Lujien بتحب تسمع أغاني من أي نوع؟",o:["عربي","إنجلش","كوري","مهرجانات"],c:1},
+ {q:"إيه التصرف اللي بيخلي Lujien تحس إن Omar مهتم بيها؟",o:["يشتري لها حاجة","يسألها ويهتم بيها","يبعتلها ميمز","يخرج مع أصحابه"],c:1},
+ {q:"إيه أكتر حاجة Omar عملها وفضلت في بال Lujien؟",o:["جاب لها ورد","بعدها عن كلب أسود لما عرف إنها بتخاف منهم","خرجوا مطعم","جاب لها هدية"],c:1},
+ {q:"ارتباط Lujien وOmar بدأ إزاي؟",o:["اتقابلوا في المدرسة","عن طريق صاحبة","كانت صدفة وبسبب ابن عمه","اتعرفوا أونلاين"],c:2},
+ {q:"إيه اللقب اللي Omar بينادي بيه Lujien؟",o:["لولو","جوجتي","لوجي","بيبي"],c:1},
+ {q:"إيه أكتر حاجة Lujien نفسها تعملها مع Omar؟",o:["تروحوا البحر","تتفرجوا على فيلم رعب مع بعض","تسافروا","تلعبوا بلايستيشن"],c:1},
+ {q:"إيه تاريخ ارتباط Lujien وOmar؟",o:["19/6/2023","19/6/2024","16/9/2024","6/19/2025"],c:1},
+ {q:"لو Lujien قالت إنها محتاجة اهتمام، أنسب حاجة تعملها إيه؟",o:["تسيبها شوية","تسألها مالها وتهتم بيها","تغير الموضوع","تقول لها نامي"],c:1},
+ {q:"لو Lujien اتضايقت بسبب التجاهل، إيه اللي غالبًا هيريحها؟",o:["رسالة واهتمام","عدم الكلام","الهزار عليها","تغيير الموضوع"],c:0},
+ {q:"إيه أكتر حاجة ممكن تخلي Lujien مبسوطة من Omar؟",o:["إنه يسأل عنها ويهتم بتفاصيلها","إنه يختفي يومين","إنه يرد بكلمة واحدة","إنه يتجاهلها"],c:0},
+ {q:"إيه وصف مناسب لعلاقة Lujien وOmar من الحاجات اللي بتحبها Lujien؟",o:["مفيهاش اهتمام","فيها اهتمام وتفاصيل صغيرة بتفرق","مبنية على الهدايا فقط","كل واحد لوحده"],c:1}
+];
+
+let current=0, answers=Array(questions.length).fill(null);
+
+function startTest(){document.getElementById("start").classList.add("hidden");document.getElementById("quiz").classList.remove("hidden");render()}
+function render(){
+ const x=questions[current];
+ document.getElementById("qnum").textContent=`السؤال ${current+1} من ${questions.length}`;
+ document.getElementById("question").textContent=x.q;
+ document.getElementById("bar").style.width=((current+1)/questions.length*100)+"%";
+ const box=document.getElementById("options"); box.innerHTML="";
+ x.o.forEach((v,i)=>{
+   const b=document.createElement("button"); b.className="option"+(answers[current]===i?" selected":""); b.textContent=v;
+   b.onclick=()=>{answers[current]=i;render()};
+   box.appendChild(b);
+ });
+ document.getElementById("backBtn").style.visibility=current===0?"hidden":"visible";
+ document.getElementById("nextBtn").textContent=current===questions.length-1?"خلصت! 💌":"التالي 💗";
+}
+function backQuestion(){if(current>0){current--;render()}}
+function nextQuestion(){
+ if(answers[current]===null){alert("اختار إجابة الأول يا Omar 👀💗");return}
+ if(current<questions.length-1){current++;render()}else{
+   document.getElementById("quiz").classList.add("hidden");
+   document.getElementById("open").classList.remove("hidden");
+ }
+}
+function showResult(){
+ const score=answers.reduce((s,a,i)=>s+(a===questions[i].c?1:0),0);
+ const pct=Math.round(score/questions.length*100);
+ document.getElementById("open").classList.add("hidden");
+ document.getElementById("result").classList.remove("hidden");
+ document.getElementById("score").textContent=pct+"%";
+ document.getElementById("fraction").textContent=`${score} / ${questions.length} إجابة صح`;
+ document.getElementById("message").textContent=score>=8
+ ?"انا بحبك اوي يا عمووريييي بجد انت عارفني للدرجة دي بجد بموووت فيك يا حياتي مواااه 🥹❤️"
+ :"دا انا هولع فيك يا كلب البحر انت كده تعرفني ازاي 😭😭";
+ document.getElementById("r1").textContent=document.getElementById("a1").value.trim()||"مفيش إجابة 😭";
+ document.getElementById("r2").textContent=document.getElementById("a2").value.trim()||"مفيش إجابة 😭";
+ document.getElementById("r3").textContent=document.getElementById("a3").value.trim()||"مفيش إجابة 😭";
+ window.scrollTo({top:0,behavior:"smooth"});
+}
+for(let i=0;i<16;i++){
+ const e=document.createElement("div");e.className="float";e.textContent=["♡","♥","✦","💗"][i%4];
+ e.style.left=Math.random()*100+"%";e.style.animationDelay=Math.random()*7+"s";e.style.fontSize=(18+Math.random()*22)+"px";
+ document.getElementById("floats").appendChild(e);
+}
+</script>
+</body>
+</html>
